@@ -1,6 +1,9 @@
-List<Integer> measurements = new File('depths.txt').text.split('\n').collect {it.toInteger() }
+List<Integer> depths = new File('depths.txt').text.split('\n').collect { it.toInteger() }
+int prev = 0
 int increases = 0
-(0..measurements.size() - 2).each {i ->
-	if (measurements[i+1] > measurements[i]) increases++
+(2..depths.size() -1).each {i ->
+	int sum = depths[i-2] + depths[i-1] + depths[i]
+	if(prev != 0 && sum > prev) increases++
+	prev = sum
 }
 println increases
