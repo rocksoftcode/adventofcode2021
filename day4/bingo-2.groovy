@@ -33,4 +33,3 @@ calls.each {call ->
 		boards.removeAll(colMatch)
 	}
 }
-println boards.size()
