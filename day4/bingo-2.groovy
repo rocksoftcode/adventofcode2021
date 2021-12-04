@@ -10,9 +10,7 @@ while (line++ < lines.size()) {
 	boards << board
 }
 
-def addAll = { List<List<Integer>> board ->
-	board.sum { it.sum {Math.max(it, 0) }}
-}
+def addAll = { board -> board.sum { it.sum {Math.max(it, 0) } } }
 calls.each {call ->
 	boards.each { board -> board.each { row -> Collections.replaceAll(row, call, -1) } }
 	List<List<List<Integer>>> rowMatch = boards.findAll {board -> board.any {row -> row[0] + row[1] + row[2] + row[3] + row[4] == -5 } }
