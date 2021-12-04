@@ -5,11 +5,9 @@ List<List<List<Integer>>> boards = []
 int line = 1
 while (line++ < lines.size()) {
 	List<List<Integer>> board = []
-	board << lines[line++].trim().split(/\s+/)*.toInteger()
-	board << lines[line++].trim().split(/\s+/)*.toInteger()
-	board << lines[line++].trim().split(/\s+/)*.toInteger()
-	board << lines[line++].trim().split(/\s+/)*.toInteger()
-	board << lines[line++].trim().split(/\s+/)*.toInteger()
+	5.times {
+		board << lines[line++].trim().split(/\s+/)*.toInteger()
+	}
 	boards << board
 }
 def addAll = { List<List<Integer>> board ->
