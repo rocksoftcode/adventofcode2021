@@ -6,9 +6,7 @@ List<List<List<Integer>>> boards = []
 int line = 1
 while (line++ < lines.size()) {
 	List<List<Integer>> board = []
-	5.times {
-		board << lines[line++].trim().split(/\s+/)*.toInteger()
-	}
+	5.times {board << lines[line++].trim().split(/\s+/)*.toInteger() }
 	boards << board
 }
 
