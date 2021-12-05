@@ -13,10 +13,6 @@ class Line {
 	}
 }
 
-def toString = {int[][] grid ->
-	grid.each {line -> println line.collect {it == 0 ? '.' : it.toString()}.join(' ')}
-	println ""
-}
 List<Line> lines = new File('input.txt').text.split('\n').collect {
 	List<String> parts = it.split(/\s->\s/)
 	List<Integer> line1 = parts[0].split(',')*.toInteger()
