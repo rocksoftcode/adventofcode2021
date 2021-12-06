@@ -8,4 +8,4 @@ List<Map<Integer, Long>> stages = [fish.collectEntries { [it, fish.count(it) as 
 	stage[8] += stages[it-1][0]
 	stages << stage
 }
-println stages[256].values().sum()
+println stages.last().values().sum()
