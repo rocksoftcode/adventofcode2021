@@ -1,8 +1,11 @@
 List<Integer> positions = new File('input.txt').text.split(',')*.toInteger()
-int mean = positions.inject(0) { sum, value -> sum + value } / positions.size()
-int cost = 0
+int bestCost = Integer.MAX_VALUE
 for (position in positions) {
-	int distance = Math.abs(position - mean)
-	cost += (distance * (distance + 1)) / 2
+	int cost = 0
+	for (i in 0..<positions.size()) {
+		int p = Math.abs(position - positions[i])
+		cost += (p*(p+1))/2
+	}
+	bestCost = Math.min(bestCost, cost)
 }
-println cost
+println bestCost
