@@ -4,15 +4,13 @@ def closes = /[\)\]\}>]/
 Map<String, String> match = [')': '(', ']': '[', '}': '{', '>': '<']
 List<Stack<String>> lineStacks = [] as Stack
 lines.eachWithIndex {it, n ->
-	Stack t = []
-	boolean ok = true
+	Stack t = []; boolean ok = true
 	for (i in 0..<it.length()) {
 		if (it[i] ==~ opens) t << it[i]
 		if (it[i] ==~ closes) {
 			String next = t.size() == 0 ? '' : t.peek()
-			if (next != match[it[i]]) {
-				ok = false; break
-			} else t.pop()
+			if (next != match[it[i]]) { ok = false; break }
+			else t.pop()
 		}
 	}
 	if (ok) lineStacks << t
@@ -24,5 +22,4 @@ lineStacks.each {
 	it.reverse().each {score = (score * 5) + scoreMap[it] }
 	scores << score
 }
-int median = Math.floor(scores.size() / 2)
-println scores.sort()[median]
+println scores.sort()[Math.floor(scores.size() / 2) as int]
