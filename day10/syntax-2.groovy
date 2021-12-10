@@ -2,7 +2,7 @@ List<String> lines = new File('input.txt').text.split('\n')
 def opens = /[\(\[\{<]/
 def closes = /[\)\]\}>]/
 Map<String, String> match = [')': '(', ']': '[', '}': '{', '>': '<']
-List<Stack<String>> lineStacks = [] as Stack
+List<Stack<String>> lineStacks = []
 lines.eachWithIndex {it, n ->
 	Stack t = []; boolean ok = true
 	for (i in 0..<it.length()) {
