@@ -11,14 +11,8 @@ def dirs = []
 nav = { node, path ->
 	List<String> curr = path.collect()
 	curr << node
-	if (node == 'end') {
-		dirs << curr
-	}
-	else {
-		for (link in links[node]) {
-			if (link.toUpperCase() == link || !curr.contains(link)) nav(link, curr)
-		}
-	}
+	if (node == 'end') dirs << curr
+	else for (link in links[node]) if (link.toUpperCase() == link || !curr.contains(link)) nav(link, curr)
 }
 nav('start', [])
 println dirs.size()
