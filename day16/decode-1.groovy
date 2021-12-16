@@ -37,13 +37,5 @@ calculate = { bits ->
 	}
 }
 String input = new File('input.txt').text
-StringBuilder builder = new StringBuilder(new BigInteger(input, 16).toString(2))
-if (input.startsWith("0")) {
-	builder.insert(0, "0000")
-}
-if (builder.length() % 4 != 0) {
-	int add = (builder.length() / 4 + 1) * 4 - builder.length()
-	for (int i = 0; i < add; i++) builder.insert(0, "0")
-}
-calculate(builder.toString())
+calculate(new BigInteger(input, 16).toString(2))
 println versionSum
