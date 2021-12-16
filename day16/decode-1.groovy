@@ -21,19 +21,17 @@ calculate = { bits ->
 		int l = lengthTypeId == 0 ? 15 : 11
 		int length = Integer.parseInt(bits.substring(pos + 1, pos + 1 + l), 2)
 		pos += l + 1
-		List<Long> results = new ArrayList<>()
 		if (lengthTypeId == 0) {
 			while (length > 0) {
 				int start = pos
-				results.add(calculate(bits))
+				calculate(bits)
 				length -= (pos - start)
 			}
 		} else {
 			for (int i = 0; i < length; i++) {
-				results.add(calculate(bits))
+				calculate(bits)
 			}
 		}
-		return results
 	}
 }
 String input = new File('input.txt').text
