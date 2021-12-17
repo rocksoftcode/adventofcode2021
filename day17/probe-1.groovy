@@ -2,8 +2,8 @@ def components = new File('input.txt').text.split(': ')[1].split(', ')
 def px = components[0].split('x=')[1].split(/\.\./)*.toInteger()
 def py = components[1].split('y=')[1].split(/\.\./)*.toInteger()
 def minx = px[0]; maxx = px[1]; miny = py[0]; maxy = py[1]
-def go = { v, min, max ->
-	Tuple<Integer> pos = [0,0]
+def go = {v, min, max ->
+	Tuple<Integer> pos = [0, 0]
 	boolean impact = false
 	List<Tuple<Integer>> positions = []
 	while (!impact && pos[0] <= max[0] && pos[1] >= min[1]) {
@@ -13,16 +13,16 @@ def go = { v, min, max ->
 		positions << pos
 		v[0] -= v[0] > 0 ? 1 : 0
 		v[1]--
-		impact = pos.withIndex().every { p, i -> p >= min[i] && p <= max[i] }
+		impact = pos.withIndex().every {p, i -> p >= min[i] && p <= max[i]}
 	}
-	return impact ? positions.collect { it[1] }.inject { mx, mv -> Math.max(mx, mv) } : -1
+	return impact ? positions.collect {it[1]}.inject {mx, mv -> Math.max(mx, mv)} : -1
 }
 Integer minvx = Math.floor(Math.sqrt(minx * 2));
 def bin = []
-(Math.abs(miny) << 1).times { y ->
-	(1 + maxx - minvx).times { x ->
+(Math.abs(miny) << 1).times {y ->
+	(1 + maxx - minvx).times {x ->
 		bin << [x + minvx, miny + y]
 	}
 }
-println bin.collect { go(it, [minx, miny], [maxx, maxy])}.findAll { it != -1 }.max { Math.abs(it) }
+println bin.collect {go(it, [minx, miny], [maxx, maxy])}.findAll {it != -1}.max {Math.abs(it)}
 
