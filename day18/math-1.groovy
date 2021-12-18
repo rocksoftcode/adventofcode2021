@@ -1,14 +1,14 @@
 import groovy.json.JsonSlurper
 
 class PairNode {
-		def depth = 0
-		def value = null
-		def left = null
-		def right = null
-		def parent = null
+	def depth = 0
+	def value = null
+	def left = null
+	def right = null
+	def parent = null
 
 	def get() {
-		if(this.value !== null)
+		if (this.value !== null)
 			return this.value
 		else return [this.left.get(), this.right.get()]
 	}
@@ -26,8 +26,8 @@ class PairNode {
 	}
 
 	def firstLeft() {
-		if(this.parent){
-			if(this.parent.left !== this)
+		if (this.parent) {
+			if (this.parent.left !== this)
 				return this.parent.left.rightmost()
 			else
 				return this.parent.firstLeft()
@@ -37,8 +37,8 @@ class PairNode {
 	}
 
 	def firstRight() {
-		if(this.parent){
-			if(this.parent.right !== this)
+		if (this.parent) {
+			if (this.parent.right !== this)
 				return this.parent.right.leftmost()
 			else
 				return this.parent.firstRight()
@@ -48,22 +48,22 @@ class PairNode {
 	}
 
 	def next() {
-		if(this.value !== null)
+		if (this.value !== null)
 			return null
-		if(this.depth === 4)
+		if (this.depth === 4)
 			return this
 		def left = this.left.next()
-		if(left !== null && left.value === null)
+		if (left !== null && left.value === null)
 			return left
 		def right = this.right.next()
-		if(right !== null && right.value === null)
+		if (right !== null && right.value === null)
 			return right
 		return null
 	}
 
 	def nextSplit() {
 		if (this.value !== null) {
-			if(this.value >= 10)
+			if (this.value >= 10)
 				return this
 		} else {
 			def leftSplit = this.left.nextSplit()
@@ -79,9 +79,9 @@ class PairNode {
 	def explode() {
 		def left = this.firstLeft()
 		def right = this.firstRight()
-		if(left !== null)
+		if (left !== null)
 			left.value += this.left.value
-		if(right !== null)
+		if (right !== null)
 			right.value += this.right.value
 		this.left = null
 		this.right = null
@@ -91,35 +91,35 @@ class PairNode {
 	def split() {
 		def left = new PairNode()
 		left.parent = this
-		left.depth = this.depth +1
-		left.value = Math.floor(this.value/2)
+		left.depth = this.depth + 1
+		left.value = Math.floor(this.value / 2)
 		this.left = left
 
 		def right = new PairNode()
 		right.parent = this
-		right.depth = this.depth +1
-		right.value = Math.ceil(this.value/2)
+		right.depth = this.depth + 1
+		right.value = Math.ceil(this.value / 2)
 		this.right = right
 
 		this.value = null
 	}
 
 	def magnitude() {
-		if(this.value !== null)
+		if (this.value !== null)
 			return this.value
 		return this.left.magnitude() * 3 + this.right.magnitude() * 2
 	}
 
 	def reduce() {
 		def reduced = false
-		while (!reduced){
+		while (!reduced) {
 			reduced = true
 			def explode = this.next()
 			def split = this.nextSplit()
-			if(explode !== null) {
+			if (explode !== null) {
 				reduced = false
 				explode.explode()
-			} else if(split !== null) {
+			} else if (split !== null) {
 				reduced = false
 				split.split()
 			}
@@ -129,24 +129,24 @@ class PairNode {
 }
 
 def create
-create = { depth, from ->
+create = {depth, from ->
 	PairNode current = new PairNode()
 	current.depth = depth
 
 	if (from instanceof Number) {
 		current.value = from;
 	} else {
-		PairNode left = create(depth +1 , from[0])
+		PairNode left = create(depth + 1, from[0])
 		left.parent = current
 		current.left = left
-		PairNode right = create(depth +1, from[1])
+		PairNode right = create(depth + 1, from[1])
 		right.parent = current
 		current.right = right
 	}
 	return current
 }
 
-List inputs = new File('input.txt').text.split('\n').collect { new JsonSlurper().parseText(it) }
+List inputs = new File('input.txt').text.split('\n').collect {new JsonSlurper().parseText(it)}
 def pair
 inputs.each {
 	if (!pair) {
