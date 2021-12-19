@@ -8,14 +8,14 @@ class Beacon {
 	}
 
 	Beacon rotate(String axis) {
-		if (axis == 'x') return new Beacon(x: x, y: z, z: -y);
-		if (axis == 'y') return new Beacon(x: -z, y: y, z: x);
-		if (axis == 'z') return new Beacon(x: y, y: -x, z: z);
+		if (axis == 'x') return new Beacon(x: x, y: z, z: -y)
+		if (axis == 'y') return new Beacon(x: -z, y: y, z: x)
+		if (axis == 'z') return new Beacon(x: y, y: -x, z: z)
 		return null
 	}
 
 	int distance(Beacon b) {
-		return Math.abs(this.x - b.x) + Math.abs(this.y - b.y) + Math.abs(this.z - b.z);
+		return Math.abs(this.x - b.x) + Math.abs(this.y - b.y) + Math.abs(this.z - b.z)
 	}
 }
 
@@ -36,7 +36,7 @@ scannerSet.add(new Beacon(x: 0, y: 0, z: 0))
 def nullSet = scanners.pop()
 outer:
 while (!scanners.isEmpty()) {
-	def ns = scanners.pop();
+	def ns = scanners.pop()
 	for (int j = 0; j < 6; j++) {
 		for (int k = 0; k < 4; k++) {
 			for (Beacon n : ns) {
@@ -49,7 +49,7 @@ while (!scanners.isEmpty()) {
 						if (count >= 12) {
 							nullSet.addAll(shift)
 							scannerSet << delta
-							continue outer;
+							continue outer
 						}
 					}
 				}
@@ -62,13 +62,13 @@ while (!scanners.isEmpty()) {
 			if (j == 4) ns = ns.collect {x -> x.rotate("z")} as Set
 		}
 	}
-	scanners.add(ns);
+	scanners.add(ns)
 }
-def max = 0;
+def max = 0
 for (Beacon b1 : scannerSet) {
 	for (Beacon b2 : scannerSet) {
-		max = Math.max(max, b1.distance(b2));
+		max = Math.max(max, b1.distance(b2))
 	}
 }
-System.out.println(max);
+System.out.println(max)
 
