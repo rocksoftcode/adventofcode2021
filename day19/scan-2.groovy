@@ -104,8 +104,8 @@ for (int i = 0; i < scannerPos.size() - 1; i++) {
 		def dist =
 				Math.abs(scannerPos[i][0] - scannerPos[j][0]) +
 						Math.abs(scannerPos[i][1] - scannerPos[j][1]) +
-						Math.abs(scannerPos[i][2] - scannerPos[j][2]);
-		maxDist = Math.max(maxDist, dist);
+						Math.abs(scannerPos[i][2] - scannerPos[j][2])
+		maxDist = Math.max(maxDist, dist)
 	}
 }
 println maxDist
