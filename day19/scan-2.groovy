@@ -1,74 +1,111 @@
-class Beacon {
-	int x
-	int y
-	int z
+def permute = { l ->
+	def length = l.size()
+	def result = [l.collect()]
+	def c = [0] * length
+	def i = 1
+	def k
+	def p
 
-	Beacon applyDelta(Beacon b) {
-		return new Beacon(x: this.x + b.x, y: this.y + b.y, z: this.z + b.z)
+	while (i < length) {
+		if (c[i] < i) {
+			k = i % 2 != 0 ? c[i] : 0
+			p = l[i]
+			l[i] = l[k]
+			l[k] = p
+			c[i]++
+			i = 1
+			result << l.collect()
+		} else {
+			c[i] = 0;
+			i++
+		}
 	}
-
-	Beacon rotate(String axis) {
-		if (axis == 'x') return new Beacon(x: x, y: z, z: -y)
-		if (axis == 'y') return new Beacon(x: -z, y: y, z: x)
-		if (axis == 'z') return new Beacon(x: y, y: -x, z: z)
-		return null
-	}
-
-	int distance(Beacon b) {
-		return Math.abs(this.x - b.x) + Math.abs(this.y - b.y) + Math.abs(this.z - b.z)
-	}
+	return result
 }
-
-List<String> scannerTexts = new File('input.txt').text.split('\n\n')
-Deque<Set<Beacon>> scanners = new LinkedList<>();
-scannerTexts.each {
-	List<String> scanner = it.split('\n')
-	Set<Beacon> result = []
-	for (i in 1..<scanner.size()) {
-		def coords = scanner[i].split(',')*.toInteger()
-		result << new Beacon(x: coords[0], y: coords[1], z: coords[2])
+def binarySearch = { arr, val, cmpFn ->
+	int m = 0
+	int n = arr.size() - 1
+	while (m <= n) {
+		int k = (n + m) >> 1
+		int cmp = cmpFn(val, arr[k])
+		if (cmp > 0) m = k + 1
+		else if (cmp < 0) n = k - 1
+		else return true
 	}
-	scanners << result
+	return false
 }
+List<String> groups = new File('input.txt').text.split(/\n{2,}/)
+List<List<Integer>> scanners = []
+groups.eachWithIndex { it, i ->
+	List<String> lines = it.split(/\n/)
+	lines.remove(0)
+	scanners[i] = lines.collect { it.split(',').collect { it.toInteger() } }
+}
+List<List<Integer>> fullMap = scanners.remove(0)
+fullMap.sort{ a, b -> (a[0] != b[0] ? a[0] - b[0] : a[1] != b[1] ? a[1] - b[1] : a[2] - b[2]) }
+List<List<Integer>> permCoord = permute([0, 1, 2])
+List<List<Integer>> multCoord = [
+		[1, 1, 1],
+		[1, 1, -1],
+		[1, -1, 1],
+		[-1, 1, 1],
+		[1, -1, -1],
+		[-1, -1, 1],
+		[-1, 1, -1],
+		[-1, -1, -1],
+]
+println "This will take a while.  Heat up some tea or something."
+println ""
 
-def scannerSet = new HashSet<Beacon>()
-scannerSet.add(new Beacon(x: 0, y: 0, z: 0))
-def nullSet = scanners.pop()
-outer:
-while (!scanners.isEmpty()) {
-	def ns = scanners.pop()
-	for (int j = 0; j < 6; j++) {
-		for (int k = 0; k < 4; k++) {
-			for (Beacon n : ns) {
-				for (Beacon b : nullSet) {
-					def delta = new Beacon(x: b.x - n.x, y: b.y - n.y, z: b.z - n.z)
-					def shift = ns.collect {x -> x.applyDelta(delta)} as Set
-					def count = 0
-					for (Beacon beacon1 in shift) {
-						if (nullSet.contains(beacon1)) count++
-						if (count >= 12) {
-							nullSet.addAll(shift)
-							scannerSet << delta
+def scannerPos = [[0, 0, 0]];
+outer: while (scanners.size() > 0) {
+	for (int i = 0; i < scanners.size(); i++) {
+		List<Integer> s = scanners[i];
+		for (perm in permCoord) {
+			for (mult in multCoord) {
+				def rotated = s.collect { c -> [c[perm[0]] * mult[0], c[perm[1]] * mult[1], c[perm[2]] * mult[2]] };
+				rotated.sort { a, b -> (a[0] != b[0] ? a[0] - b[0] : a[1] != b[1] ? a[1] - b[1] : a[2] - b[2]) }
+
+				for (fullMapPoint in fullMap) {
+					for (point in rotated) {
+						def displacement = point.withIndex().collect { c, j -> fullMapPoint[j] - c }
+						def pointsFound = []
+						def pointsNotFound = []
+						for (check in rotated) {
+							def fixed = check.withIndex().collect { v, k -> v + displacement[k] }
+							def found = binarySearch(fullMap, fixed, {a, b ->
+								a[0] != b[0] ? a[0] - b[0] : a[1] != b[1] ? a[1] - b[1] : a[2] - b[2]
+							})
+							if (!found) {
+								pointsNotFound << fixed
+							} else {
+								pointsFound << fixed
+							}
+							if (pointsNotFound.size() > s.size() - 12) break
+						}
+
+						if (pointsNotFound.size() <= s.size() - 12) {
+							fullMap.addAll(pointsNotFound)
+							fullMap.sort { a, b -> (a[0] != b[0] ? a[0] - b[0] : a[1] != b[1] ? a[1] - b[1] : a[2] - b[2]) }
+							scanners.removeAt(i)
+							scannerPos << displacement
 							continue outer
 						}
 					}
 				}
 			}
-			ns = ns.collect {x -> x.rotate("x")} as Set
-		}
-		if (j < 5) {
-			if (j < 3) ns = ns.collect {x -> x.rotate("y")} as Set
-			if (j > 2) ns = ns.collect {x -> x.rotate("z")} as Set
-			if (j == 4) ns = ns.collect {x -> x.rotate("z")} as Set
 		}
 	}
-	scanners.add(ns)
 }
-def max = 0
-for (Beacon b1 : scannerSet) {
-	for (Beacon b2 : scannerSet) {
-		max = Math.max(max, b1.distance(b2))
-	}
-}
-System.out.println(max)
 
+def maxDist = 0
+for (int i = 0; i < scannerPos.size() - 1; i++) {
+	for (int j = i + 1; j < scannerPos.size(); j++) {
+		def dist =
+				Math.abs(scannerPos[i][0] - scannerPos[j][0]) +
+						Math.abs(scannerPos[i][1] - scannerPos[j][1]) +
+						Math.abs(scannerPos[i][2] - scannerPos[j][2]);
+		maxDist = Math.max(maxDist, dist);
+	}
+}
+println maxDist
