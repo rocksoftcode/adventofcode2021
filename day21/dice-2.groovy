@@ -1,7 +1,7 @@
 import groovy.json.JsonBuilder
 def wrap = { it > 10 ? it - 10 : it }
 List<String> input = new File('input.txt').text.split(/\n/)
-List<Integer> spots = [input[0].split(' ').last().toBigInteger(), input[1].split(' ').last().toBigInteger()]
+List<Integer> spots = [input[0].split(' ').last().toInteger(), input[1].split(' ').last().toInteger()]
 Map cache = [:]
 
 def wins
