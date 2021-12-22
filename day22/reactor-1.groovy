@@ -17,38 +17,38 @@ class Cuboid {
 		this.on = on
 	}
 
-	def overlaps(Cuboid otherCuboid) {
-		return otherCuboid.minX <= this.maxX && this.minX <= otherCuboid.maxX
-				&& otherCuboid.minY <= this.maxY && this.minY <= otherCuboid.maxY
-				&& otherCuboid.minZ <= this.maxZ && this.minZ <= otherCuboid.maxZ
+	def overlaps(Cuboid other) {
+		return other.minX <= this.maxX && this.minX <= other.maxX
+				&& other.minY <= this.maxY && this.minY <= other.maxY
+				&& other.minZ <= this.maxZ && this.minZ <= other.maxZ
 	}
 
-	def split(Cuboid cuttingCuboid) {
-		List<Cuboid> splitCuboids = []
-		if (cuttingCuboid.minX > this.minX) {
-			splitCuboids << new Cuboid([this.minX, cuttingCuboid.minX - 1], [this.minY, this.maxY], [this.minZ, this.maxZ])
+	def split(Cuboid cut) {
+		List<Cuboid> splits = []
+		if (cut.minX > this.minX) {
+			splits << new Cuboid([this.minX, cut.minX - 1], [this.minY, this.maxY], [this.minZ, this.maxZ])
 		}
-		if (cuttingCuboid.maxX < this.maxX) {
-			splitCuboids << new Cuboid([cuttingCuboid.maxX + 1, this.maxX], [this.minY, this.maxY], [this.minZ, this.maxZ])
-		}
-
-		List<Integer> middleXRange = [Math.max(this.minX, cuttingCuboid.minX), Math.min(this.maxX, cuttingCuboid.maxX)];
-		if (cuttingCuboid.minY > this.minY) {
-			splitCuboids << new Cuboid(middleXRange, [this.minY, cuttingCuboid.minY - 1], [this.minZ, this.maxZ])
-		}
-		if (cuttingCuboid.maxY < this.maxY) {
-			splitCuboids << new Cuboid(middleXRange, [cuttingCuboid.maxY + 1, this.maxY], [this.minZ, this.maxZ])
+		if (cut.maxX < this.maxX) {
+			splits << new Cuboid([cut.maxX + 1, this.maxX], [this.minY, this.maxY], [this.minZ, this.maxZ])
 		}
 
-		List<Integer> middleYRange = [Math.max(this.minY, cuttingCuboid.minY), Math.min(this.maxY, cuttingCuboid.maxY)];
-		if (cuttingCuboid.minZ > this.minZ) {
-			splitCuboids << new Cuboid(middleXRange, middleYRange, [this.minZ, cuttingCuboid.minZ - 1])
+		List<Integer> middleXRange = [Math.max(this.minX, cut.minX), Math.min(this.maxX, cut.maxX)];
+		if (cut.minY > this.minY) {
+			splits << new Cuboid(middleXRange, [this.minY, cut.minY - 1], [this.minZ, this.maxZ])
 		}
-		if (cuttingCuboid.maxZ < this.maxZ) {
-			splitCuboids << new Cuboid(middleXRange, middleYRange, [cuttingCuboid.maxZ + 1, this.maxZ])
+		if (cut.maxY < this.maxY) {
+			splits << new Cuboid(middleXRange, [cut.maxY + 1, this.maxY], [this.minZ, this.maxZ])
 		}
 
-		return splitCuboids
+		List<Integer> middleYRange = [Math.max(this.minY, cut.minY), Math.min(this.maxY, cut.maxY)];
+		if (cut.minZ > this.minZ) {
+			splits << new Cuboid(middleXRange, middleYRange, [this.minZ, cut.minZ - 1])
+		}
+		if (cut.maxZ < this.maxZ) {
+			splits << new Cuboid(middleXRange, middleYRange, [cut.maxZ + 1, this.maxZ])
+		}
+
+		return splits
 	}
 
 	def volume() {
